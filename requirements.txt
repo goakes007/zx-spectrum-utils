@@ -1,0 +1,5 @@
+pygame == 2.1.2
+Pillow == 9.0.1
+Pillow-PIL == 0.1.dev0
+pylint == 2.12.2
+flake8 == 4.0.1
