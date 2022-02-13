@@ -1,3 +1,16 @@
+# Ignore IDE specific files
+.idea/
+.vscode/
+
+# Log files
+**/logs
+
+# Speccy files
+*.sna
+*.z80
+*.trz
+*.zxs
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
