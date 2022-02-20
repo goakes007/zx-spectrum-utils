@@ -3,9 +3,10 @@ This program will allow the user to covert a zx spectrum file into a viewable gr
 in the aid to try and find graphics that they might be interested in looking at or using
 """
 import pygame
-import image_lib as il
 import memory
 import helper
+import image_lib as il
+
 LOG = helper.log_from_file_path(__file__)
 
 SCREEN_SIZE = [1000, 800]
