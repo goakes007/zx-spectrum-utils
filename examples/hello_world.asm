@@ -14,10 +14,8 @@ main:                                   ; Just a label - so that the savesna wor
 
 ; //////////////////// MAIN Section     ; This is just a comment
 start:                                  ; This is a label that the previous jp jumps to, to start the program
-    ld hl,hello_str                     ; Load HL register with the hello string
-    COOL_PRINT                          ; Call COOL_PRINT to print the hello string
-    ld hl,world_str                     ; Load HL register with the world string
-    COOL_PRINT                          ; Call COOL_PRINT to print the world string
+    COOL_PRINT hello_str                ; Call COOL_PRINT with the hello string
+    COOL_PRINT world_str                ; Call COOL_PRINT with the world string
 l1  jr l1                               ; Nothing else to do here so just continuely loop - you program would go on to do more here
 
 ; //////////////////// Data Section

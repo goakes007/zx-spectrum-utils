@@ -1,6 +1,8 @@
 # Ignore IDE specific files
+.tmp/
 .idea/
 .vscode/
+samples/
 
 # Log files
 **/logs

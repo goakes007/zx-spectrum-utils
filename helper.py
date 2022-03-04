@@ -128,3 +128,14 @@ def percentage(now, maximum):
     percentage_value = (now / (maximum - 1)) * 100
     out = "{:6.2f}%".format(percentage_value)
     return out
+
+
+def hex_short(value):
+    """
+    Give an integer in value, convert it to a hexidecial but remove the 0x
+    :param value: the integer
+    :return: the shorted version of hex
+    """
+    hex_value = hex(value)[2:]
+    if len(hex_value) == 1: hex_value = f"0{hex_value}"
+    return hex_value
