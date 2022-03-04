@@ -20,6 +20,12 @@
         - memory_loc - the location of a zero terminated string
         - colour - standard speccy colour format:     [flash][bright][paper][ink]
 
+** PRINT_8x8_GRAPHIC screenyx, memory_loc, colour
+    This is a macro that takes 3 parameters. 
+        - screenxy - The screen location: y=0-191, x=0-31
+        - memory_loc - the location of graphic
+        - colour - standard speccy colour format:     [flash][bright][paper][ink]
+
 ** PRINT_REGISTER reg
     This will print the value of a register to the bottom right of the screen. Parameters:
         - reg - the register to print.
@@ -33,14 +39,18 @@
 
     ifndef PRINT_LETTERS_ASM
     define PRINT_LETTERS_ASM
+    jp PRINT_LETTERS.print_letters_end
 
   include colour.asm
   include helper.asm
 
   ; COOL_PRINT: A great way of printing text to the screen with lots of widgets
-  ; hl = holds the memory location of a zero terminated string. Many special characters can be used
-  macro COOL_PRINT
+  ; memory_str = holds the memory location of a zero terminated string. Many special characters can be used
+  macro COOL_PRINT memory_str
+    push hl
+    ld hl, memory_str
     call PRINT_LETTERS.cool_print
+    pop hl
   endm
 
   ; PRINT_WORD: on the screen
@@ -52,6 +62,18 @@
     ld hl, screenyx8
     ld de, memory_loc
     call PRINT_LETTERS.priv_print_word
+    pop bc,de,hl
+  endm
+
+  ; PRINT_8x8_GRAPHIC: on the screen
+  ; h = y axis, pixel level
+  ; l = x8 axis, char level
+  macro PRINT_8x8_GRAPHIC screenyx8, memory_loc, colour
+    push hl,de,bc
+    ld c, colour
+    ld hl, screenyx8
+    ld de, memory_loc
+    call PRINT_LETTERS.priv_print_8x8_graphic
     pop bc,de,hl
   endm
 
@@ -106,6 +128,7 @@ pLeft                   equ     $9f               ; Reset all turning stuff, and
 pDown                   equ     $a0               ; Reset all turning stuff, and print downwards
 pUp                     equ     $a1               ; Reset all turning stuff, and print upwards
 pRat                    equ     $a2               ; Reset and print at
+pRepeat                 equ     $a3               ; Repeat the last character
 
     MODULE PRINT_LETTERS
 
@@ -182,10 +205,13 @@ call_control_table
                         dw  private_pMemory
                         dw  private_pRight, private_pLeft
                         dw  private_pDown, private_pUp
-                        dw  private_pRat
+                        dw  private_pRat, private_pRepeat
 
 
 ; hl holds pointer to string which is zero terminated
+cool_print_work_area
+    db  0   ; +0    last char printed
+
 cool_print
     push ix, hl, de, bc
     ld ix, p_init_memory_values
@@ -197,19 +223,11 @@ cool_print
 
         cp $80      ; if greater than $80 then it's a control character
         jr nc, .control_char
+        ld (cool_print_work_area+0),a
         call print_next_letter      ; print the letter
-        IX_GET b,p_mem.incx         ; move x
-        IX_GET a,p_mem.x
-        add a,b
-        and $1f
-        IX_SET p_mem.x,a
-        IX_GET b,p_mem.incy         ; move y
-        IX_GET a,p_mem.y
-        add a,b
-        and $1f
-        IX_SET p_mem.y,a
+        call move_xy_screen_pointers
         inc hl
-        jp .next1
+        jr .next1
 
 .control_char                       ; get the callable location from callable control table
         push hl
@@ -232,6 +250,22 @@ cool_print
 
     _END_IF_NO_ELSE 0
     pop bc, de, hl, ix
+    ret
+
+
+move_xy_screen_pointers
+    push bc
+    IX_GET b,p_mem.incx         ; move x
+    IX_GET a,p_mem.x
+    add a,b
+    and $1f
+    IX_SET p_mem.x,a
+    IX_GET b,p_mem.incy         ; move y
+    IX_GET a,p_mem.y
+    add a,b
+    and $1f
+    IX_SET p_mem.y,a
+    pop bc
     ret
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -381,6 +415,23 @@ private_pSizeY                                    ; SIZE y
             inc hl      :     IX_SET p_mem.sizey,(hl)
             ret
 
+private_pRepeat                                   ; REPEAT number
+            inc hl
+            ld a,(hl)
+            and $1f
+            ld b,a
+            cp 0
+            jr z, .end1
+            ld a,(cool_print_work_area+0)
+            ld c,a
+
+.repeat         ld a,c
+                call print_next_letter      ; print the letter
+                call move_xy_screen_pointers
+                djnz .repeat
+.end1
+            ret
+
 private_pMemory            ; MEMORY
             inc hl
             ld e,(hl)
@@ -428,11 +479,11 @@ p_work_area2    db  0,0,0,0,0,0,0,0
 
 ; ix holds p_mem structure
 print_next_letter:
-    push hl
+    push hl,bc
     call create_next_letter
     call rotate_and_mirror
     call draw_next_letter
-    pop hl
+    pop bc,hl
     ret
 
 rotate_and_mirror
@@ -713,5 +764,30 @@ priv_print_letter:
   pop hl,de,bc
   ret
 
+
+; h down            0-23
+; l across          0-31
+; c colour
+; de memory of graphic
+priv_print_8x8_graphic
+  push bc,de,hl
+  CALC_SCREEN_LOCATION hl
+  ld      b, 8h
+.pll1:
+    ld      a,(de)
+    ld      (hl),a
+    inc     de
+    INC_Y_SCREEN_LOCATION
+    dec     b
+    jr      nz, .pll1
+    ; colour our letter
+    pop hl  ; grab the screen location
+    push hl
+    CALC_COLOUR_LOCATION hl
+    ld (hl),c
+  pop hl,de,bc
+  ret
+
+print_letters_end: nop
    ENDMODULE
    ENDIF

@@ -35,6 +35,9 @@
 	macro IX_ADD _offset, value
 	macro IX_SUB _offset, value
 	macro IX_CP _offset1, _offset2   
+  macro IX_GET2 _reg1?, _reg2?, _offset
+  macro IX_SET2 _offset, _reg1?, _reg2?
+
 
   ** MEMORY macros which are similar to the IX macros but directly to memory
 	macro MEM_SET _mem_loc,_value
@@ -70,6 +73,7 @@
 
   IFNDEF HELPER_ASM
   define  HELPER_ASM
+  jp helper.helper_end
 
 FALSE       equ     0
 TRUE        equ     1
@@ -192,13 +196,24 @@ TRUE        equ     1
 ; MACRO FOR MEMORY COMMANDS with IX register
 
   macro IX_GET _reg?, _offset          ; Willy memory get offset
-    ld a,( ix + _offset)
-    ld _reg?,a
+    ld _reg?, (ix+_offset)
+  endm
+
+  macro IX_GET2 _reg1?, _reg2?, _offset          ; Willy memory get offset
+    ld _reg2?, (ix+_offset+0)
+    ld _reg1?, (ix+_offset+1)
   endm
 
   macro IX_SET _offset,_reg?
     ld a,_reg?
     ld (ix+_offset),a
+  endm
+
+  macro IX_SET2 _offset, _reg1?,  _reg2?
+    ld a,_reg2?
+    ld (ix+_offset+0),_reg2?
+    ld a,_reg1?
+    ld (ix+_offset+1),_reg1?
   endm
 
   macro IX_LD _offset,_offset2
@@ -212,10 +227,30 @@ TRUE        equ     1
     ld (ix+_offset),a
   endm
 
+  macro IX_INC2 _offset
+    ld a,(ix+_offset)
+    inc a
+    ld (ix+_offset),a
+    cp 0
+    jr z,.ixi
+    inc (ix+_offset+1)
+.ixi    
+  endm
+
   macro IX_DEC _offset
     ld a,(ix+_offset)
     dec a
     ld (ix+_offset),a
+  endm
+
+  macro IX_DEC2 _offset
+    ld a,(ix+_offset)
+    dec a
+    ld (ix+_offset),a
+    cp 0
+    jr z,.ixd
+    dec (ix+_offset+1)
+.ixd
   endm
 
   macro IX_ADD _offset, value
@@ -271,7 +306,7 @@ TRUE        equ     1
 
   macro CALC_COLOUR_LOCATION8x8 screeny8x8
     ld hl,screeny8x8
-    call helper.priv_screen_calc_8x8_colour:
+    call helper.priv_screen_calc_8x8_colour
   endm
 
   macro CALC_COLOUR_LOCATION screenyx8
@@ -337,10 +372,47 @@ TRUE        equ     1
     call helper.hex_to_string
   endm
 
+  macro RANDOM	; return a random 8 bit number in A
+    call helper.random
+  endm
+
 HEX_TO_STRING_MEM equ helper.hex_to_string_mem
 
 
+
   module helper
+
+random_memory
+    dw 0000
+
+random
+    push hl, de
+    ld a,r
+    ld e,a
+    ld d,0
+    ld a,(random_memory)
+    ld l,a
+    ld a,(random_memory+1)
+    ld h,a
+    add hl,de
+    ld a,h
+    cp 16
+    jr c, .r1
+    ld a,0
+    ld h,a
+.r1 ld a,l
+    ld (random_memory),a
+    ld a,h
+    ld (random_memory+1),a
+    ld a,(hl)
+    ld d,a
+    inc hl
+    ld a,(hl)
+    .2 rr a
+    xor d
+    pop de, hl
+    ret
+
 
 hex_to_string_mem dz "0000"
 ; de holds memory location to get
@@ -595,6 +667,8 @@ priv_calc_memory_offset
     ld l,a
     pop de
   ret
-  endmodule
 
+
+helper_end  nop
+  endmodule
   ENDIF

@@ -68,8 +68,9 @@ This will give you a good understanding of what they can be used for.
 Note: that the assembler of choice is [sjasmplus](https://github.com/sjasmplus/sjasmplus) as it is very powerful.
 
 ### Getting started
-If you would like to run these from the command line then first install sjasmplus and update the setenv.cmd file.
-Set emulator to point to your emulator. And set sjadm_path to the sjasmplus executable. 
+If you would like to run these from the command line then first install 
+sjasmplus and update the run.cmd file at the top of the file.
+Set **emulator** to point to your emulator and set **sjadm_path** to the sjasmplus executable. 
 Once these have been configured, you can start a command prompt, navigate to the examples directory, 
 and use **run filename** to run the examples.
 
@@ -141,8 +142,40 @@ These can all be combined with each other as needed.
 One thing that is not so obvious is that as you set controls in place they stay in place.
 This can be reset back to defaults by either calling pReset or pRat which is a reset followed by a screen location.
 
-### Colours Module (Colour.asm)
+### Colours Module (colour.asm)
 Simply has a list of colours that you can use.
+
+### Input Module (input.asm)
+An easy way to find what keys have been pressed. 
+Just include it at the top of your program, 
+add the macro "GET_KEYS_PRESSED" to your game loop.
+Finally, test if a key is pressed using something like:
+```text
+    include "input.asm"
+    ...
+game_loop
+    GET_KEYS_PRESSED
+    ld a,(keys2)                    ; Keys "yuiop"   if p is pressed (first bit)
+    and 1                           ; Just checking for first bit
+    _IF label1, a, 1
+        call move_right_key_pressed ; call the routine to deal with p pressed
+    _END_IF_NO_ELSE label1
+```
+Here's a table for the keys which is in the code
+```text
+         BITS
+       4 3 2 1 0   
+keys0  B N MSsSp    
+keys1  H J K LEn    
+keys2  Y U I O P    
+keys3  6 7 8 9 0    
+keys4  5 4 3 2 1    
+keys5  T R E W Q    
+keys6  G F D S A    
+keys7  V C X ZCs    
+```
+Note: If you define DEBUG to TRUE then the keys being pressed will be 
+displayed at the bottom of the screen.
 
 ### Helper module (Helper.asm)
 This module is here to provide LOTS of great macros to make coding much 
@@ -196,6 +229,9 @@ The first set are short jumps like jr, and the secondf set use JP
 	macro IX_ADD _offset, value
 	macro IX_SUB _offset, value
 	macro IX_CP _offset1, _offset2   
+	macro IX_GET2 _reg1?, _reg2?, _offset
+  	macro IX_SET2 _offset, _reg1?, _reg2?
+
 ```
 
 #### MEMORY macros
@@ -232,6 +268,7 @@ Which are similar to the IX macros but directly to memory
 	macro CALC_MEMORY_OFFSET mem_start, number
 	macro INIT_MEMORY mem_start,mem_length
 	macro HEX_TO_STRING
+	macro RANDOM	; return a random 8 bit number in A
 ```
 
 ## 3. Developers / Pull Requests
