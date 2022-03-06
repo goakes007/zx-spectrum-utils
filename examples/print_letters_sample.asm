@@ -7,8 +7,8 @@ main:
     include ../asm/print_letters.asm
 
 start:
-	SET_SCREEN_COLOR BgBlue+Bright
-	SET_BORDER_COLOR Blue
+	SET_SCREEN_COLOUR BgBlue+Bright
+	SET_BORDER_COLOUR Blue
 
     COOL_PRINT str1
     COOL_PRINT str2
