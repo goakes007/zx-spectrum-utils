@@ -226,8 +226,8 @@ The first set are short jumps like jr, and the secondf set use JP
 #### For macros
 For loop allows a loop for a register
 ```text
-	macro _FOR	reg, _start
-	macro _END_FOR reg, _end
+	macro _FOR	reg, _start, end, step
+	macro _END_FOR reg,
 ```
 
 #### ALL IX macros

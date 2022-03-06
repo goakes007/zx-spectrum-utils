@@ -174,7 +174,7 @@ TRUE        equ     1
   endm
 
 ; ================================================================
-; MACRO FOR MEMORY COMMANDS
+; MACRO FOR MEMORY COMMANDS 
   macro MEM_SET _mem_loc,_value
     ld a,_value
     ld (_mem_loc),a
