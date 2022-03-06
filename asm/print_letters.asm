@@ -68,10 +68,11 @@
   ; PRINT_8x8_GRAPHIC: on the screen
   ; h = y axis, pixel level
   ; l = x8 axis, char level
-  macro PRINT_8x8_GRAPHIC screenyx8, memory_loc, colour
+  macro PRINT_8x8_GRAPHIC screeny8x8, memory_loc, colour
     push hl,de,bc
     ld c, colour
-    ld hl, screenyx8
+    ld hl, screeny8x8
+    .3 sla h
     ld de, memory_loc
     call PRINT_LETTERS.priv_print_8x8_graphic
     pop bc,de,hl
