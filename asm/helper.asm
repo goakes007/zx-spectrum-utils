@@ -53,9 +53,9 @@
 	macro CALC_COLOUR_LOCATION8x8 screeny8x8
 	macro CALC_COLOUR_LOCATION screenyx8
 	macro INC_Y_SCREEN_LOCATION
-	macro INC_Y_COLOR_LOCATION
-	macro SET_SCREEN_COLOR color_num
-	macro SET_BORDER_COLOR color_num2
+	macro INC_Y_COLOUR_LOCATION
+	macro SET_SCREEN_COLOUR colour_num
+	macro SET_BORDER_COLOUR colour_num2
 
   ** Miscellaneous
 	macro DIV_8 reg
@@ -337,21 +337,21 @@ TRUE        equ     1
     call helper.priv_screen_inc_y
   endm
 
-  macro INC_Y_COLOR_LOCATION
+  macro INC_Y_COLOUR_LOCATION
     call helper.priv_screen_inc_y_colour
   endm
 
-  macro SET_SCREEN_COLOR color_num
+  macro SET_SCREEN_COLOUR colour_num
     push af
-    ld a,color_num
+    ld a,colour_num
     or 7
-    call helper.priv_set_screen_color_to_a
+    call helper.priv_set_screen_colour_to_a
     pop af
   endm
 
-  macro SET_BORDER_COLOR color_num2
+  macro SET_BORDER_COLOUR colour_num2
     push af
-    ld a,color_num2
+    ld a,colour_num2
     out (#fe),a  
     pop af
   endm
@@ -520,11 +520,11 @@ priv_multiple
   ret
 
 
-priv_set_screen_color_to_a:
+priv_set_screen_colour_to_a:
 ; Accumulator will hold colour
   push hl,de,bc
   ld d,a
-  ld hl,$5800   ; color screen location
+  ld hl,$5800   ; colour screen location
   ld bc,32*24
 .l1
   ld a,d
@@ -614,7 +614,7 @@ priv_screen_calc_8x8_colour:
     jp priv_screen_calc_yx8_colour 
 
 priv_screen_calc_yx8_colour:
-  ; Calculate the color location in HL and set HL to this value
+  ; Calculate the colour location in HL and set HL to this value
   ; Y = h in pixels, so need to shift right 3 times
   ; X = l
   ; Given screen position in HL, calculate the actual screen memory location

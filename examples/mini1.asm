@@ -14,7 +14,7 @@ NEX     equ 1
         ORG 0x4000
         defs 0x6000 - $    ; move after screen area
 screen_top: defb    0   ; WPMEMx
-        DEFINE DO_NOT_USE_COLOR True
+        DEFINE DO_NOT_USE_COLOUR True
         defs 0x8000 - $
     ENDIF
 
@@ -26,8 +26,8 @@ screen_top: defb    0   ; WPMEMx
 main:
     include print_letters.asm
 
-    SET_SCREEN_COLOR BgBlue+FgWhite
-    SET_BORDER_COLOR Black
+    SET_SCREEN_COLOUR BgBlue+FgWhite
+    SET_BORDER_COLOUR Black
   
     _FOR h, 3, 23, 2
         _FOR l, 2, 30, 2
@@ -115,7 +115,7 @@ stack_top:
 
         SAVENEX OPEN "examples/mini1.nex", main, stack_top
         SAVENEX CORE 2, 0, 0        ; Next core 2.0.0 required as minimum
-        SAVENEX CFG 7   ; Border color
+        SAVENEX CFG 7   ; Border colour
         SAVENEX AUTO
         SAVENEX CLOSE
     ENDIF

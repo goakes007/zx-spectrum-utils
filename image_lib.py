@@ -5,7 +5,7 @@ import pygame
 import helper
 LOG = helper.log_from_file_path(__file__)
 
-# Define the colors we will use in RGB format
+# Define the colours we will use in RGB format
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 BLUE = (0, 0, 255)
@@ -14,19 +14,19 @@ LGREEN = (0, 255, 0)
 RED = (255, 0, 0)
 
 
-def draw_text(screen, color, point, text, size=15):
+def draw_text(screen, colour, point, text, size=15):
     """
     Add text to the surface of the screen
     :param screen: screen to blitz
-    :param color: color
+    :param colour: colour
     :param point: location
     :param text: text
     :param size: size
     :return: n/a
     """
-    LOG.debug(f"draw_text: screen:{screen}, color:{color}, point:{point}, text:{text}, size:{size}")
+    LOG.debug(f"draw_text: screen:{screen}, colour:{colour}, point:{point}, text:{text}, size:{size}")
     font = pygame.font.SysFont('Ariel', size)
-    text_surface = font.render(text, True, color)
+    text_surface = font.render(text, True, colour)
     text_rect = text_surface.get_rect()
     text_rect.topleft = point
     screen.blit(text_surface, text_rect)

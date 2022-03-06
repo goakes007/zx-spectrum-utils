@@ -263,9 +263,9 @@ Which are similar to the IX macros but directly to memory
 	macro CALC_COLOUR_LOCATION8x8 screeny8x8
 	macro CALC_COLOUR_LOCATION screenyx8
 	macro INC_Y_SCREEN_LOCATION
-	macro INC_Y_COLOR_LOCATION
-	macro SET_SCREEN_COLOR color_num
-	macro SET_BORDER_COLOR color_num2
+	macro INC_Y_COLOUR_LOCATION
+	macro SET_SCREEN_COLOUR colour_num
+	macro SET_BORDER_COLOUR colour_num2
 	macro CLS
 ```
 
