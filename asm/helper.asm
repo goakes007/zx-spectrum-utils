@@ -80,6 +80,20 @@ TRUE        equ     1
 
 ; ================================================================
 ; MACRO IF STATEMENT with SHORT jumps
+	macro	_FOR	reg, _start
+		ld reg,_start
+@.for_reg
+	endm
+
+  macro _END_FOR reg, _end
+    inc reg
+    ld a,reg
+    cp _end
+    jr nz, .for_reg
+	endm
+
+; ================================================================
+; MACRO IF STATEMENT with SHORT jumps
 	macro	_IF	ifinstance,_reg,_value
 		ld a,_reg
 		cp _value

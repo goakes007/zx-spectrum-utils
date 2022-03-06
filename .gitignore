@@ -12,6 +12,8 @@ samples/
 *.z80
 *.trz
 *.zxs
+*.nex
+*.sld
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

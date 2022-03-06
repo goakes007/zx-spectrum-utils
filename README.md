@@ -73,6 +73,10 @@ sjasmplus and update the run.cmd file at the top of the file.
 Set **emulator** to point to your emulator and set **sjadm_path** to the sjasmplus executable. 
 Once these have been configured, you can start a command prompt, navigate to the examples directory, 
 and use **run filename** to run the examples.
+Check out this video for getting started.
+[![Getting Started](https://i9.ytimg.com/vi/HWNXIYY29Jc/mq2.jpg?sqp=CISvj5EG&rs=AOn4CLDWDXdEhjCsa1GioFEnj-_qhsRP8Q&retry=1)](https://youtu.be/HWNXIYY29Jc)
+
+Getting Started Presentation: https://docs.google.com/presentation/d/15R4BytHgwOTKLnwlgieuS_XoJJmri6D3qJiumF-eZEU/edit#slide=id.p
 
 ### Printing Letters - Hello World (hello_world.asm, print_letters_sample.asm)
 There is also a examples folder which shows how to make use of some of these libraries.
@@ -203,7 +207,6 @@ increase readability.
 
 #### All the IF MACROS
 The first set are short jumps like jr, and the secondf set use JP
-
 ```text
 	macro	_IF	ifinstance,_reg,_value
 	macro	_IF_NOT	ifinstance,_reg,_value
@@ -217,6 +220,14 @@ The first set are short jumps like jr, and the secondf set use JP
 	macro	_LONG_END_IF_NO_ELSE ifinstance
 	macro	_LONG_IX_IF	ifinstance,_offset,_value
 	macro	_IX_IF	ifinstance,_offset,_value
+```
+
+
+#### For macros
+For loop allows a loop for a register
+```text
+	macro _FOR	reg, _start
+	macro _END_FOR reg, _end
 ```
 
 #### ALL IX macros
