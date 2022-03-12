@@ -1,85 +1,36 @@
 # ZX Spectrum Utilities: (zx-spectrum-utils)
-Here are a few utility programs that can be used with the ZX Spectrum roms as well as assember macros.
-The langage of choice here is Z80 Assember and Python so it would help if you have know in these langauges.
+Here are a few utility programs that can be used with the ZX Spectrum for assisting in assembler development, 
+manipulating graphics and roms.
+The langage of choice here is Z80 Assember and with some graphics utils in Python.
 The ZX Spectrum is one of the first home computers from the early 1980s.
 More information can be found here: https://en.wikipedia.org/wiki/ZX_Spectrum
 
-## 1. Graphics Viewer: graphics_viewer
-Lets start with a Python program,
-graphics_viewer can be used to pull in a spectrum file like a snap, z80 or trz file and
-see the content as images. 
-The idea of this tool is to allow the user to find graphics in the old games
-and be able to have fun seeing them and also display the assembler DBs that
-would be required to created them. 
-Below is a screen shot
-
-![graphics_viewer](images/graphics_viewer_screen.png)
-
-There are a few key concepts to understand when using this program:
-* file: You are displaying the content of a file on the screen in a graphical format in the hopes to find graphics
-* memory: The memory pointer is shown in the top left corner and this is controlled by the arrow keys
-* increase: Is the value that memory will change when certain keys are pressed. Changing this number will allow you to move around memory either more quickly or more refined
-* columns: There are several columns and these are described below
-* moving image: Images can be seen as moving by placing them on top of each other over time. For this we need an image count and size. In the example shown in the screen shot above it is using a 2x2 image size and an image count of 4. The red text "2x2" would need to be pressed.
-* image count: the number of images in the moving image section from 1 to 8.
-* red text: This is the size of the image you are interested in displaying for the moving graphic
-
-**Columns**
-* first column: Is the memory location, see how the number increase as it goes down the screen
-* Green text: This is the actual content of that memory location
-* 8 - 8 bit sized images
-* 16 - 16 bit sized images
-* 24 - 24 bit sized images
-* 32 - 32 bit sized images
-* 64 - 64 bit sized images
-
-**Keys**
-* Up/down - move the memory pointer by the increase amount (fast memory movement)
-* Left/right - move memory pointer by 1 (refined/slow movement)
-* Page up/down - change the memory increase amount
-* f - Read a new file
-* d - Show assembler DBs for the moving image
-* 1,2,3,4,5,6,7,8 - the number of images in the moving image
-* q - quit (or escape)
-
-**Mouse Control**
-* Click green text: Move the memory pointer to that value
-* Click numbered column (8, 16, 24, 32, 64): Dumps that columns assember DBs
-* Click red text: Select the moving image size. For example 2x2
-
-### Getting Started
-* Install python: https://www.python.org/downloads/
-* Start a command prompt, clone the repo locally, and change to the root folder
-* It is probably best to create a local virtual environment under the root, lets say under venv
-  * python -m venv venv
-* To active this python version
-  * venv\Scripts\activate 
-* update pip (optional)
-  * python.exe -m pip install --upgrade pip 
-* Install all the pre-req modules
-  * pip install -r requirements.txt
-* Run Graphics Viewer:
-  * python graphics_viewer.py
-
-## 2. A library of ASM macros and definitions
-Now, lets move over to some macros and definitions that have been supplied in the asm folder.
-You should start by opening colour.asm, helper.asm and print_letters.asm.
+## 1. A library of ASM macros and definitions
+Macros and definitions have been supplied in the asm folder.
+If you would like to understand these in detail then it is recommended that you should 
+start by opening colour.asm, helper.asm and print_letters.asm.
 This will give you a good understanding of what they can be used for.
 Note: that the assembler of choice is [sjasmplus](https://github.com/sjasmplus/sjasmplus) as it is very powerful.
 
-### Getting started
-If you would like to run these from the command line then first install 
-sjasmplus and update the run.cmd file at the top of the file.
-Set **emulator** to point to your emulator and set **sjadm_path** to the sjasmplus executable. 
-Once these have been configured, you can start a command prompt, navigate to the examples directory, 
-and use **run filename** to run the examples.
-Check out this video for getting started.
-[![Getting Started](https://i9.ytimg.com/vi/HWNXIYY29Jc/mq2.jpg?sqp=CISvj5EG&rs=AOn4CLDWDXdEhjCsa1GioFEnj-_qhsRP8Q&retry=1)](https://youtu.be/HWNXIYY29Jc)
+### Run the samples
+If you would like to run these from the command line then 
+1. first install [sjasmplus](https://github.com/sjasmplus/sjasmplus).
+2. cd examples
+3. Update the run.cmd file at the top of the file.
+* Set **emulator** to point to your emulator and 
+* set **sjadm_path** to the sjasmplus executable. 
+4. use **run filename** to run the examples.
+* For example:      zx-spectrum-utils> **run hello_world.asm**
+* or zx-spectrum-utils> **run charset.asm**
+* or zx-spectrum-utils> **run print_letters_sample.asm**
+
 
 Getting Started Presentation: https://docs.google.com/presentation/d/15R4BytHgwOTKLnwlgieuS_XoJJmri6D3qJiumF-eZEU/edit#slide=id.p
 
 ### Printing Letters - Hello World (hello_world.asm, print_letters_sample.asm)
-There is also a examples folder which shows how to make use of some of these libraries.
+If you prefer to watch videos then here's one for the hello world example or you can read about it below.
+[![Getting Started](https://i9.ytimg.com/vi/HWNXIYY29Jc/mq2.jpg?sqp=CISvj5EG&rs=AOn4CLDWDXdEhjCsa1GioFEnj-_qhsRP8Q&retry=1)](https://youtu.be/HWNXIYY29Jc)
+
 Lets look at the hello_world.asm first. It can be broken into the following sections:
 
 Section 1 - this is just some comments at the top - please read them
@@ -281,6 +232,63 @@ Which are similar to the IX macros but directly to memory
 	macro HEX_TO_STRING
 	macro RANDOM	; return a random 8 bit number in A
 ```
+
+## 2. Graphics Viewer: graphics_viewer
+Lets start with a Python program,
+graphics_viewer can be used to pull in a spectrum file like a snap, z80 or trz file and
+see the content as images. 
+The idea of this tool is to allow the user to find graphics in the old games
+and be able to have fun seeing them and also display the assembler DBs that
+would be required to created them. 
+Below is a screen shot
+
+![graphics_viewer](images/graphics_viewer_screen.png)
+
+There are a few key concepts to understand when using this program:
+* file: You are displaying the content of a file on the screen in a graphical format in the hopes to find graphics
+* memory: The memory pointer is shown in the top left corner and this is controlled by the arrow keys
+* increase: Is the value that memory will change when certain keys are pressed. Changing this number will allow you to move around memory either more quickly or more refined
+* columns: There are several columns and these are described below
+* moving image: Images can be seen as moving by placing them on top of each other over time. For this we need an image count and size. In the example shown in the screen shot above it is using a 2x2 image size and an image count of 4. The red text "2x2" would need to be pressed.
+* image count: the number of images in the moving image section from 1 to 8.
+* red text: This is the size of the image you are interested in displaying for the moving graphic
+
+**Columns**
+* first column: Is the memory location, see how the number increase as it goes down the screen
+* Green text: This is the actual content of that memory location
+* 8 - 8 bit sized images
+* 16 - 16 bit sized images
+* 24 - 24 bit sized images
+* 32 - 32 bit sized images
+* 64 - 64 bit sized images
+
+**Keys**
+* Up/down - move the memory pointer by the increase amount (fast memory movement)
+* Left/right - move memory pointer by 1 (refined/slow movement)
+* Page up/down - change the memory increase amount
+* f - Read a new file
+* d - Show assembler DBs for the moving image
+* 1,2,3,4,5,6,7,8 - the number of images in the moving image
+* q - quit (or escape)
+
+**Mouse Control**
+* Click green text: Move the memory pointer to that value
+* Click numbered column (8, 16, 24, 32, 64): Dumps that columns assember DBs
+* Click red text: Select the moving image size. For example 2x2
+
+### Getting Started
+* Install python: https://www.python.org/downloads/
+* Start a command prompt, clone the repo locally, and change to the root folder
+* It is probably best to create a local virtual environment under the root, lets say under venv
+  * python -m venv venv
+* To active this python version
+  * venv\Scripts\activate 
+* update pip (optional)
+  * python.exe -m pip install --upgrade pip 
+* Install all the pre-req modules
+  * pip install -r requirements.txt
+* Run Graphics Viewer:
+  * python graphics_viewer.py
 
 ## 3. Developers / Pull Requests
 If you would like to contribute to this repo then please submit a pull request.

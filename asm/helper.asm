@@ -241,9 +241,19 @@ TRUE        equ     1
   endm
 
   macro IX_INC _offset
+    ;ld a,(ix+_offset)
+    ;inc a
+    inc (ix+_offset)
+  endm
+
+  macro IX_INC_MAX _offset, _max, _maxvalue
     ld a,(ix+_offset)
     inc a
     ld (ix+_offset),a
+    cp _max
+    jr nz, .e1
+    ld (ix+_offset), _maxvalue
+.e1
   endm
 
   macro IX_INC2 _offset
@@ -257,9 +267,17 @@ TRUE        equ     1
   endm
 
   macro IX_DEC _offset
+    dec (ix+_offset)
+  endm
+
+  macro IX_DEC_MIN _offset, _min, _minvalue
     ld a,(ix+_offset)
     dec a
     ld (ix+_offset),a
+    cp _min
+    jr nz,.e2
+    ld (ix+_offset),_minvalue
+.e2
   endm
 
   macro IX_DEC2 _offset
