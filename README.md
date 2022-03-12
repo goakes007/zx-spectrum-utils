@@ -235,7 +235,7 @@ Which are similar to the IX macros but directly to memory
 
 ## 2. Graphics Viewer: graphics_viewer
 Lets start with a Python program,
-graphics_viewer can be used to pull in a spectrum file like a snap, z80 or trz file and
+**graphics_viewer** that can be used to pull in a spectrum file like a snap, z80 or trz file and
 see the content as images. 
 The idea of this tool is to allow the user to find graphics in the old games
 and be able to have fun seeing them and also display the assembler DBs that
@@ -253,6 +253,21 @@ There are a few key concepts to understand when using this program:
 * image count: the number of images in the moving image section from 1 to 8.
 * red text: This is the size of the image you are interested in displaying for the moving graphic
 
+### Getting Started
+* Install python: https://www.python.org/downloads/
+* Start a command prompt, clone the repo locally, and change to the root folder then into src folder
+* It is probably best to create a local python virtual environment under this src, lets say under venv
+  * python -m venv venv
+* To active this python version
+  * venv\Scripts\activate 
+* update pip (optional)
+  * python.exe -m pip install --upgrade pip 
+* Install all the pre-req modules
+  * pip install -r requirements.txt
+* Run Graphics Viewer:
+  * python graphics_viewer.py
+
+### Important concepts
 **Columns**
 * first column: Is the memory location, see how the number increase as it goes down the screen
 * Green text: This is the actual content of that memory location
@@ -276,19 +291,6 @@ There are a few key concepts to understand when using this program:
 * Click numbered column (8, 16, 24, 32, 64): Dumps that columns assember DBs
 * Click red text: Select the moving image size. For example 2x2
 
-### Getting Started
-* Install python: https://www.python.org/downloads/
-* Start a command prompt, clone the repo locally, and change to the root folder
-* It is probably best to create a local virtual environment under the root, lets say under venv
-  * python -m venv venv
-* To active this python version
-  * venv\Scripts\activate 
-* update pip (optional)
-  * python.exe -m pip install --upgrade pip 
-* Install all the pre-req modules
-  * pip install -r requirements.txt
-* Run Graphics Viewer:
-  * python graphics_viewer.py
 
 ## 3. Developers / Pull Requests
 If you would like to contribute to this repo then please submit a pull request.
