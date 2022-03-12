@@ -10,22 +10,32 @@ cls
 set this_filepath=%cd%
 set asm_filename=%1
 
-if not exist %asm_filename%.asm (
-    echo "File %asm_filename%.asm does not exist..."
+set snap_filename=%asm_filename:~0,-4%.sna
+set extension=%asm_filename:~-4%
+echo ex %extension%
+
+if not exist %asm_filename% (
+    echo File %asm_filename% does not exist...
 
 ) else (
-    @rem %sjasm_path% %asm_filename%.asm --inc=../asm -DNEX=0
-    %sjasm_path% %asm_filename%.asm --inc=../asm -DCMDLINE=1
-    IF ERRORLEVEL 1 (
-        Echo ------------------------------------------------
-        Echo             Error during assembly
-        Echo ------------------------------------------------
-    ) ELSE (
-        Echo Compliled successfully!
-        Echo ------------------------------------------------
-        Echo           Compliled successfully!
-        Echo ------------------------------------------------
-        start %emulator% %this_filepath%\%asm_filename%.sna
+
+    if NOT %extension% == .asm (
+        echo File %asm_filename% has extension [%extension%] not [.asm] as expected
+
+    ) else (
+        @rem %sjasm_path% %asm_filename% --inc=../asm -DNEX=0
+        %sjasm_path% %asm_filename% --inc=../asm -DCMDLINE=1
+        IF ERRORLEVEL 1 (
+            Echo ------------------------------------------------
+            Echo             Error during assembly
+            Echo ------------------------------------------------
+        ) ELSE (
+            Echo Compliled successfully!
+            Echo ------------------------------------------------
+            Echo           Compliled successfully!
+            Echo ------------------------------------------------
+            start %emulator% %this_filepath%\%snap_filename%
+        )
     )
 )
 

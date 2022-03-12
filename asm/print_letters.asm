@@ -6,7 +6,7 @@
         dw  pAt,3,10,pInk,Blue,pPaper,Yellow,pBright,pBold,pDown"Hello World"
     This will print at screen location x=3,y=10, with blue ink, yellow paper, bright, bold writing down (not right) the words "Hello World".
     This is great for building fun text screens like for adventures. Here's a list of possible controls:
-        pAt                pColour            pInk               pPaper             pBright            pNotBright         
+        pAt x32,y24        pColour colourFF   pInk Colour8       pPaper             pBright            pNotBright         
         pFlash             pNotFlash          pBold              pNotBold           pUnderscore        pNotUnderscore     
         pStrikeThrough     pNotStrikeThrough  pItalic            pNotItalic         pMirrorX           pNotMirrorX       
         pMirrorY           pNotMirrorY        pReset             pDefault           pInverse           pIncx              
@@ -24,7 +24,7 @@
     This is a macro that takes 3 parameters. 
         - screenxy - The screen location: y=0-191, x=0-31
         - memory_loc - the location of graphic
-        - colour - standard speccy colour format:     [flash][bright][paper][ink]
+        - colour - standard speccy colo888888ur format:     [flash][bright][paper][ink]
 
 ** PRINT_REGISTER reg
     This will print the value of a register to the bottom right of the screen. Parameters:
@@ -52,6 +52,35 @@
     call PRINT_LETTERS.cool_print
     pop hl
   endm
+
+  ; COOL_PRINTS: Like COOL_PRINT but many strings
+  ; memory_str = holds an array of strings with a zero terminated string.
+  macro COOL_PRINTS memory_str
+    push hl
+    ld hl, memory_str
+    call PRINT_LETTERS.cool_prints
+    pop hl
+  endm
+
+
+;             0,1,2,      3,4,    5       6 7 8  9, 10
+cp_str  db pRat,0,0,pColour,BgWhite+FgBlack,pBold,pMemory,0,0,' ',0
+    macro COOL_AT screeny8x8, memory_loc, colour, pAction
+        push hl,de
+        ld hl,screeny8x8
+        MEM_SET cp_str+1,l  ; screen
+        MEM_SET cp_str+2,h  ; location
+        ld hl,memory_loc                ; this should point to the char, but we're print space so -32*8
+        ld de,32*8
+        sub hl,de
+        MEM_SET cp_str+7,l  ; memory
+        MEM_SET cp_str+8,h  ; location
+        MEM_SET cp_str+4,colour
+        MEM_SET cp_str+5,pAction
+        ld hl, cp_str
+        call PRINT_LETTERS.cool_print
+        pop de,hl
+    endm
 
   ; PRINT_WORD: on the screen
   ; h = y axis, pixel level
@@ -130,8 +159,28 @@ pDown                   equ     $a0               ; Reset all turning stuff, and
 pUp                     equ     $a1               ; Reset all turning stuff, and print upwards
 pRat                    equ     $a2               ; Reset and print at
 pRepeat                 equ     $a3               ; Repeat the last character
+pRotate1                equ     $a4               ; 90 degress
 
     MODULE PRINT_LETTERS
+
+; Point HL to a list of strings, terminated with 0,0
+cool_prints
+    push hl,de
+.next
+    ld e,(hl)
+    inc hl
+    ld d,(hl)
+    inc hl
+    ld a,d
+    or e
+    cp 0
+    jr z,.end1
+    COOL_PRINT de
+    jr .next
+.end1
+    pop de,hl
+    ret
+
 
 ;   To dos: reset 1,2,3,4, size x,y
 
@@ -206,7 +255,7 @@ call_control_table
                         dw  private_pMemory
                         dw  private_pRight, private_pLeft
                         dw  private_pDown, private_pUp
-                        dw  private_pRat, private_pRepeat
+                        dw  private_pRat, private_pRepeat, private_pRotate1
 
 
 ; hl holds pointer to string which is zero terminated
@@ -368,6 +417,9 @@ private_pRotate            ; ROTATE
             and 3
             IX_SET p_mem.rotate,a
             ret
+private_pRotate1            ; ROTATE1
+            IX_SET p_mem.rotate,1
+            ret
 private_pInverse            ; INVERSE
             IX_GET a,p_mem.colour
             ld c,a
@@ -524,11 +576,8 @@ image_mirrorx
     ret
 
 image_mirrory
-    push ix, hl, de, bc
-    ; mirror the original sprite but put into work_area2
-    call clear_work_area_2
+    push hl, de, bc
     ld hl, p_work_area
-    ld ix,p_work_area2
     ld b,8
 .l2     ld e,(hl)
         ld d,0
@@ -537,15 +586,11 @@ image_mirrory
             rr d
             dec c
             jr nz, .l1
-        ld (ix),d
-        inc ix
+        ld (hl),d
         inc hl
         djnz .l2
-
-    ; Copy the image back to the original work area
-    call copy_workarea2_back_to_1
-    pop bc, de, hl, ix
-
+    pop bc, de, hl
+    ret
 
 rotate90
     push ix, hl, de, bc
