@@ -1,22 +1,28 @@
 # ZX Spectrum Utilities: (zx-spectrum-utils)
-Here are a few utility programs that can be used with the ZX Spectrum for assisting in assembler development, 
-manipulating graphics and roms.
-The langage of choice here is Z80 Assember and with some graphics utils in Python.
+In here you wuill find lots of assembler macros and callable routines to make your
+development of ZX Spectrum assembler code much faster and easier.
+There are routines for printing, screen calculations, if statements, for loops, keyboard presses
+and much much more. There are also some python scripts to manipulate z80 graphics and pull/rip them from old roms.
+
 The ZX Spectrum is one of the first home computers from the early 1980s.
 More information can be found here: https://en.wikipedia.org/wiki/ZX_Spectrum
 
 ## 1. A library of ASM macros and definitions
-Macros and definitions have been supplied in the asm folder.
-If you would like to understand these in detail then it is recommended that you should 
-start by opening colour.asm, helper.asm and print_letters.asm.
+It is recommended to start with the samples in the next section which will hopefully whet your appetite.
+Macros, callable routines and definitions have been supplied in the asm folder.
+If you would like to understand these in detail then you could 
+open colour.asm, input.asm, helper.asm and print_letters.asm.
 This will give you a good understanding of what they can be used for.
 Note: that the assembler of choice is [sjasmplus](https://github.com/sjasmplus/sjasmplus) as it is very powerful.
 
 ### Run the samples
+This is a good first step to understanding what is available with only a few lines of code.
 If you would like to run these from the command line then 
 1. first install [sjasmplus](https://github.com/sjasmplus/sjasmplus).
-2. cd examples
-3. Update the run.cmd file at the top of the file.
+2. Clone this repo and 
+3. cd examples
+4. Edit run.cmd file 
+5. Update at the top of the file.
 * Set **emulator** to point to your emulator and 
 * set **sjadm_path** to the sjasmplus executable. 
 4. use **run filename** to run the examples.
@@ -24,16 +30,18 @@ If you would like to run these from the command line then
 * or zx-spectrum-utils> **run charset.asm**
 * or zx-spectrum-utils> **run print_letters_sample.asm**
 
-
-Getting Started Presentation: https://docs.google.com/presentation/d/15R4BytHgwOTKLnwlgieuS_XoJJmri6D3qJiumF-eZEU/edit#slide=id.p
-
-### Printing Letters - Hello World (hello_world.asm, print_letters_sample.asm)
+### Create Hello World program
+The next section walks through the creation of the hello_world.asm program. 
 If you prefer to watch videos then here's one for the hello world example or you can read about it below.
-[![Getting Started](https://i9.ytimg.com/vi/HWNXIYY29Jc/mq2.jpg?sqp=CISvj5EG&rs=AOn4CLDWDXdEhjCsa1GioFEnj-_qhsRP8Q&retry=1)](https://youtu.be/HWNXIYY29Jc)
+[![Getting Started](https://i9.ytimg.com/vi/HWNXIYY29Jc/mq3.jpg?sqp=CMyMtJEG&rs=AOn4CLDSai5uOBEtUNUGNuX9UCv_CDxHgw)]
+(https://youtu.be/HWNXIYY29Jc)
+
+Getting for hello_world.asm: https://docs.google.com/presentation/d/15R4BytHgwOTKLnwlgieuS_XoJJmri6D3qJiumF-eZEU/edit#slide=id.p
 
 Lets look at the hello_world.asm first. It can be broken into the following sections:
 
-Section 1 - this is just some comments at the top - please read them
+#### Section 1 - this is just some comments at the top - please read them
+Think of the numbers are the screen co-ordinates
 ```
 ; This is a sample program "Hello World" for print_letters asm library
 ;  0123456789       <-- This is the screen position
@@ -44,7 +52,8 @@ Section 1 - this is just some comments at the top - please read them
 ;  5    World
 ```
 
-Section  2 - some assembler directives. Comments have been added after the ; for your understanding
+#### Section  2 - some assembler directives. 
+Comments have been added after the ; for your understanding
 ```text
     DEVICE ZXSPECTRUM48                 ; Select 48k spectrum as output device
     ORG $8000                           ; Start the output to $8000 memory address
@@ -53,35 +62,38 @@ main:                                   ; Just a label - so that the savesna wor
     include print_letters.asm           ; Include the print letters library, hence the need for the previous jump
 ```
 
-Section 3 - the main section. Comments have been added after the ; for your understanding
+#### Section 3 - the main section. 
+Comments have been added after the ; for your understanding
 
 ```text
 ; //////////////////// MAIN Section     ; This is just a comment
 start:                                  ; This is a label that the previous jp jumps to, to start the program
-    ld hl,hello_str                     ; Load HL register with the hello string
-    COOL_PRINT                          ; Call COOL_PRINT to print the hello string
-    ld hl,world_str                     ; Load HL register with the world string
-    COOL_PRINT                          ; Call COOL_PRINT to print the world string
+    COOL_PRINT hello_str                ; Call COOL_PRINT to print the hello string
+    COOL_PRINT world_str                ; Call COOL_PRINT to print the world string
 l1  jr l1                               ; Nothing else to do here so just continuely loop - you program would go on to do more here
 ```
 Importantly, writing this code is super easy to print stuff to the screen!
 
-Section 4 - The data section, which is how you can define the hello and world strings that were previously printed.
-Notice the pAt,pDown,pInk and so on - these are control characters that are part of the string to get cool print to do special things.
-Understanding these control characters will allow you to make get screens. 
-Check out print_letters.asm for all these control characters.
+#### Section 4
+The data section, which is how you can define the hello and world strings that were previously printed.
+Notice the pAt,pDown,pInk and so on - these are controls that are part of the string 
+to get cool print to do special things.
+Understanding these controls will allow you to make perform power actions on the screens. 
+Check out print_letters.asm for all these controls.
 ```text
 ; //////////////////// Data Section
 hello_str    dz  pAt,6,1,pDown,pItalic,pInk,Green,"Hello"       ; Notice how this map to the comments
 world_str    dz  pRat,5,5,pBold,pInk,Blue,"World"               ;    at the start of this program
 ```
-Section 5 - lastly, just create the snap file. Importantly, this is the same name as the asm file.
+#### Section 5
+lastly, just create the snap file. Importantly, this is the same name as the asm file.
 ```text
     SAVESNA "hello_world.sna", main
 ```
+#### section 6
+Running this sample as follows: **run hello_world.asm**
 
-Running this sample as follows: **run hello_world**
-<p>The output looks as follows: 
+The output looks as follows: 
 
 ![hello_world](images/hello_world.png)
 
@@ -101,40 +113,23 @@ This can be reset back to defaults by either calling pReset or pRat which is a r
 Simply has a list of colours that you can use.
 
 ### Input Module (input.asm)
-An easy way to find what keys have been pressed. 
+Is an easy way to find what keys have been pressed. 
 Just include it at the top of your program, 
 add the macro "GET_KEYS_PRESSED" to your game loop.
 Finally, test if a key is pressed using something like:
 ```text
-    include "input.asm"
+    include "input.asm"             ; 1. Include it!
     ...
 game_loop
-    GET_KEYS_PRESSED
-    ld a,(keys2)                    ; Keys "yuiop"   if p is pressed (first bit)
-    and 1                           ; Just checking for first bit
-    _IF label1, a, 1
+    GET_KEYS_PRESSED                ; 2. Call it at the top of the game loop
+    ...
+    _IF_KEY 1, KEY_P                ; 3. This test for the "P" key being pressed
         call move_right_key_pressed ; call the routine to deal with p pressed
     _END_IF_NO_ELSE label1
 ```
-Here's a table for the keys which is in the code
-```text
-         BITS
-       4 3 2 1 0   
-keys0  B N MSsSp    
-keys1  H J K LEn    
-keys2  Y U I O P    
-keys3  6 7 8 9 0    
-keys4  5 4 3 2 1    
-keys5  T R E W Q    
-keys6  G F D S A    
-keys7  V C X ZCs    
-```
-Note: If you define DEBUG to TRUE then the keys being pressed will be 
-displayed at the bottom of the screen.
-
 ### Helper module (Helper.asm)
 This module is here to provide LOTS of great macros to make coding much 
-simpler for the developer. 
+simpler for the assembler developer. 
 Here is a brief explanation of what they are at a high level.
 The developers favourite ones are the _IF set and _IX set which 
 he uses all the time to cut down the number of lines of code and 
@@ -146,7 +141,7 @@ increase readability.
           ; do what ever....
       _ELSE label1                <-- If reg A is NOT zero then it will do this block
           ; otherwise do this....
-      _END_IF
+      _END_IF label1
 ```
 
 ```text
@@ -159,25 +154,28 @@ increase readability.
 #### All the IF MACROS
 The first set are short jumps like jr, and the secondf set use JP
 ```text
-	macro	_IF	ifinstance,_reg,_value
-	macro	_IF_NOT	ifinstance,_reg,_value
+    ; Relative local jumps
+	macro _IF	ifinstance,_reg,_value
+	macro _IF_NOT	ifinstance,_reg,_value
 	macro _ELSE ifinstance
-	macro	_END_IF ifinstance
-	macro	_END_IF_NO_ELSE ifinstance
-	macro	_LONG_IF	ifinstance,_reg,_value
-	macro	_LONG_IF_NOT	ifinstance,_reg,_value
+	macro _END_IF ifinstance
+	macro _END_IF_NO_ELSE ifinstance
+	; Long jumps
+	macro _LONG_IF	ifinstance,_reg,_value
+	macro _LONG_IF_NOT	ifinstance,_reg,_value
 	macro _LONG_ELSE ifinstance
-	macro	_LONG_END_IF ifinstance
-	macro	_LONG_END_IF_NO_ELSE ifinstance
-	macro	_LONG_IX_IF	ifinstance,_offset,_value
-	macro	_IX_IF	ifinstance,_offset,_value
+	macro _LONG_END_IF ifinstance
+	macro _LONG_END_IF_NO_ELSE ifinstance
+	; Jumps depending on IX
+	macro _LONG_IX_IF	ifinstance,_offset,_value
+	macro _IX_IF ifinstance,_offset,_value
 ```
 
 
 #### For macros
 For loop allows a loop for a register
 ```text
-	macro _FOR	reg, _start, end, step
+	macro _FOR     reg, _start, end, step
 	macro _END_FOR reg,
 ```
 
