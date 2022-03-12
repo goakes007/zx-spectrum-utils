@@ -1,5 +1,7 @@
 # Change Log for zx_spectrum_utils
 
+## 0.0.5 Added .sna files to simplify running of samples
+
 ## 0.0.4 Restructured to give equal focus on assember and python
 
 ## 0.0.3 Added IF_KEY asm, charset.asm

@@ -18,11 +18,23 @@ Note: that the assembler of choice is [sjasmplus](https://github.com/sjasmplus/s
 ### Run the samples
 This is a good first step to understanding what is available with only a few lines of code.
 If you would like to run these from the command line then 
-1. first install [sjasmplus](https://github.com/sjasmplus/sjasmplus).
-2. Clone this repo and 
-3. cd examples
-4. Edit run.cmd file 
-5. Update at the top of the file.
+1. Clone this repo and 
+2. cd examples
+3. Edit run.cmd file 
+4. Update at the top of the file.
+* Set **emulator** to point to your emulator and 
+5. use **run filename** to run the examples.
+* For example:      zx-spectrum-utils> **run hello_world.sna**
+* or zx-spectrum-utils> **run charset.sna**
+* or zx-spectrum-utils> **run print_letters_sample.sna**
+
+### Assemble and run the samples
+This is a good second step to understanding what is available with only a few lines of code.
+Assuming the above steps have been completed. 
+If you would like to run these from the command line then 
+1. Install [sjasmplus](https://github.com/sjasmplus/sjasmplus)
+2. Edit arun.cmd file 
+3. Update at the top of the file.
 * Set **emulator** to point to your emulator and 
 * set **sjadm_path** to the sjasmplus executable. 
 4. use **run filename** to run the examples.

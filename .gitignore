@@ -8,7 +8,6 @@ samples/
 **/logs
 
 # Speccy files
-*.sna
 *.z80
 *.trz
 *.zxs
