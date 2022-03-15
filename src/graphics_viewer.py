@@ -24,6 +24,7 @@ def run():
     """
     pygame.init()
     clock = pygame.time.Clock()
+
     screen = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption("Graphics Viewer")
 

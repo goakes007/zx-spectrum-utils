@@ -362,7 +362,7 @@ TRUE        equ     1
   macro SET_SCREEN_COLOUR colour_num
     push af
     ld a,colour_num
-    or 7
+    ;or 7
     call helper.priv_set_screen_colour_to_a
     pop af
   endm
