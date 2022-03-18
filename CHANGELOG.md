@@ -1,5 +1,7 @@
 # Change Log for zx_spectrum_utils
 
+## 0.0.7 Added DRAW1,2 and PLOT1,2 macros with examples
+
 ## 0.0.6 Added Character sets to charset example
 
 ## 0.0.5 Added .sna files to simplify running of samples
@@ -13,4 +15,4 @@
 ## 0.0.2 Added Interlace
 * Also added more ASM utils such as RANDOM
 
-##0.0.1 Initial release with lots of goodies
+## 0.0.1 Initial release with lots of goodies

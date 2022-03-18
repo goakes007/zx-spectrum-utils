@@ -1,5 +1,5 @@
 # ZX Spectrum Utilities: (zx-spectrum-utils)
-In here you wuill find lots of assembler macros and callable routines to make your
+In here you will find lots of assembler macros and callable routines to make your
 development of ZX Spectrum assembler code much faster and easier.
 There are routines for printing, screen calculations, if statements, for loops, keyboard presses
 and much much more. There are also some python scripts to manipulate z80 graphics and pull/rip them from old roms.
@@ -21,12 +21,15 @@ If you would like to run these from the command line then
 1. Clone this repo and 
 2. cd examples
 3. Edit run.cmd file 
-4. Update at the top of the file.
+4. Update the top of the file.
 * Set **emulator** to point to your emulator and 
 5. use **run filename** to run the examples.
 * For example:      zx-spectrum-utils> **run hello_world.sna**
 * or zx-spectrum-utils> **run charset.sna**
 * or zx-spectrum-utils> **run print_letters_sample.sna**
+* or zx-spectrum-utils> **run draw.sna**
+5. You can now open each file but with the .asm extension to view what the code looks like and see how
+easy it is to produce these programs
 
 ### Assemble and run the samples
 This is a good second step to understanding what is available with only a few lines of code.
@@ -38,9 +41,11 @@ If you would like to run these from the command line then
 * Set **emulator** to point to your emulator and 
 * set **sjadm_path** to the sjasmplus executable. 
 4. use **run filename** to run the examples.
-* For example:      zx-spectrum-utils> **run hello_world.asm**
-* or zx-spectrum-utils> **run charset.asm**
-* or zx-spectrum-utils> **run print_letters_sample.asm**
+* For example:      zx-spectrum-utils> **arun hello_world.asm**
+* or zx-spectrum-utils> **arun charset.asm**
+* or zx-spectrum-utils> **arun print_letters_sample.asm**
+5. You can now open each file but with the .asm extension to view what the code looks like and see how
+easy it is to produce these programs
 
 ### Create Hello World program
 The next section walks through the creation of the hello_world.asm program. 
@@ -157,90 +162,146 @@ increase readability.
 ```
 
 ```text
-        ; Sample IX macros. Imagine you had created a structure, and set IX pointing to that structure, then use these macros to access their offset
-        ld ix, p_init_memory_values
-        IX_GET b, p_mem.incx              <-- Equivalent to ld a,(IX+p_mem.incx) : ld b,a
-        IX_LD p_mem.incx, p_mem.incy      <-- Equivalent to: ld a,(IX+p_mem.incy) : ld (IX+p_mem.incx),a
+    ; Sample IX macros. Imagine you had created a structure, and set IX pointing to that structure, then use these macros to access their offset
+    ld ix, p_init_memory_values
+    IX_GET b, p_mem.incx              <-- Equivalent to ld a,(IX+p_mem.incx) : ld b,a
+    IX_LD p_mem.incx, p_mem.incy      <-- Equivalent to: ld a,(IX+p_mem.incy) : ld (IX+p_mem.incx),a
 ```
 
 #### All the IF MACROS
-The first set are short jumps like jr, and the secondf set use JP
+The first set are short jumps like jr, and the second set use JP
 ```text
-    ; Relative local jumps
-	macro _IF	ifinstance,_reg,_value
-	macro _IF_NOT	ifinstance,_reg,_value
-	macro _ELSE ifinstance
-	macro _END_IF ifinstance
-	macro _END_IF_NO_ELSE ifinstance
-	; Long jumps
-	macro _LONG_IF	ifinstance,_reg,_value
-	macro _LONG_IF_NOT	ifinstance,_reg,_value
-	macro _LONG_ELSE ifinstance
-	macro _LONG_END_IF ifinstance
-	macro _LONG_END_IF_NO_ELSE ifinstance
-	; Jumps depending on IX
-	macro _LONG_IX_IF	ifinstance,_offset,_value
-	macro _IX_IF ifinstance,_offset,_value
+    ; ** Relative local jumps
+    macro _IF	ifinstance,_reg,_value
+    macro _IF_NOT	ifinstance,_reg,_value
+    macro _ELSE ifinstance
+    macro _END_IF ifinstance
+    macro _END_IF_NO_ELSE ifinstance
+    ; ** Long jumps
+    macro _LONG_IF	ifinstance,_reg,_value
+    macro _LONG_IF_NOT	ifinstance,_reg,_value
+    macro _LONG_ELSE ifinstance
+    macro _LONG_END_IF ifinstance
+    macro _LONG_END_IF_NO_ELSE ifinstance
+    ; ** Jumps depending on IX
+    macro _LONG_IX_IF	ifinstance,_offset,_value
+    macro _IX_IF ifinstance,_offset,_value
 ```
+
+Example - if a=0 then b=1 else b=2
+```
+    _IF ind1, a, 0
+        ld b, 1
+    _ELSE ind1
+        ld b,2
+    _END_IF ind1
+```
+
 
 
 #### For macros
 For loop allows a loop for a register
 ```text
-	macro _FOR     reg, _start, end, step
-	macro _END_FOR reg,
+    macro _FOR     reg, _start, end, step
+    macro _END_FOR reg,
+```
+
+Example from draw.asm: This draws a nice pattern on the screen
+```text
+MAX             equ 190
+STEP            equ 10
+    ld h,160
+    ld l,0
+    ld d,0
+    _FOR e, 0,MAX+STEP,STEP
+        ld a,MAX
+        sub e
+        ld h,a
+        DRAW2 hl, de
+    _END_FOR e
 ```
 
 #### ALL IX macros
+This is a great way of manipulating structures which I use loads!
 ```text
-	macro IX_GET _reg?, _offset      
-	macro IX_SET _offset,_reg?
-	macro IX_LD _offset,_offset2
-	macro IX_INC _offset
-	macro IX_DEC _offset
-	macro IX_ADD _offset, value
-	macro IX_SUB _offset, value
-	macro IX_CP _offset1, _offset2   
-	macro IX_GET2 _reg1?, _reg2?, _offset
-  	macro IX_SET2 _offset, _reg1?, _reg2?
+    macro IX_GET _reg?, _offset      
+    macro IX_SET _offset,_reg?
+    macro IX_LD _offset,_offset2
+    macro IX_INC _offset
+    macro IX_DEC _offset
+    macro IX_ADD _offset, value
+    macro IX_SUB _offset, value
+    macro IX_CP _offset1, _offset2   
+    macro IX_GET2 _reg1?, _reg2?, _offset
+    macro IX_SET2 _offset, _reg1?, _reg2?
+```
 
+Example from charset.asm
+```text
+    struct  vars                                            ;
+cs      byte    1   ; 1-4                                   ;
+char    byte    32  ; 32-128                                ;
+gx      byte    0   ; 0-7                                   ;
+gy      byte    0   ; 0-7                                   ; THIS
+max     byte    4   ; 0-...                                 ; 
+cnt     byte    0   ; count down to next try the keys       ; IS
+    ends                                                    ;
+                                                            ; ALL
+vars_memory                                                 ;
+    db  1       ; charset                                   ; STANDARD
+    db  65      ; char                                      ;
+    db  3,3     ; g x,y                                     ; ASSEMBLER
+    db  4,4     ; max, cnt                                  ;
+    
+    ld ix, vars_memory      ; Set IX to point to the structure
+    IX_GET a,vars.char      ; ** set a to the char value in var structure
+    IX_INC vars.gx          ; inc gx value in vars structure
 ```
 
 #### MEMORY macros
 Which are similar to the IX macros but directly to memory
 ```text
-	macro MEM_SET _mem_loc,_value
-	macro MEM_GET reg,_mem_loc
-	macro MEM_INC _mem_loc
-	macro MEM_DEC _mem_loc
-	macro MEM_ADD _mem_loc,_value
-	macro MEM_SUB _mem_loc,_value
+    macro MEM_SET _mem_loc,_value
+    macro MEM_GET reg,_mem_loc
+    macro MEM_INC _mem_loc
+    macro MEM_DEC _mem_loc
+    macro MEM_ADD _mem_loc,_value
+    macro MEM_SUB _mem_loc,_value
 ```
 
 #### Dealing with the screen
 ```text
-	macro CALC_SCREEN_LOCATION screenyx8
-	macro CALC_SCREEN_LOCATION8x8 screeny8x8
-	macro CALC_COLOUR_LOCATION8x8 screeny8x8
-	macro CALC_COLOUR_LOCATION screenyx8
-	macro INC_Y_SCREEN_LOCATION
-	macro INC_Y_COLOUR_LOCATION
-	macro SET_SCREEN_COLOUR colour_num
-	macro SET_BORDER_COLOUR colour_num2
-	macro CLS
+    macro CALC_SCREEN_LOCATION screenyx8
+    macro CALC_SCREEN_LOCATION8x8 screeny8x8
+    macro CALC_COLOUR_LOCATION8x8 screeny8x8
+    macro CALC_COLOUR_LOCATION screenyx8
+    macro INC_Y_SCREEN_LOCATION
+    macro INC_Y_COLOUR_LOCATION
+    macro SET_SCREEN_COLOUR colour_num
+    macro SET_BORDER_COLOUR colour_num2
+    macro CLS
+```
+
+#### Drawing
+Routines for plotting and drawing on the screen
+```text
+    macro PLOT1 x,y                             ; 2 (1 byte) args
+    macro PLOT2 xy                              ; 1 (2 bytes) arg
+    macro DRAW1 x1,y1,x2,y2                     ; 4 (1 byte) args
+    macro PLOT2 xy1,xy2                         ; 1 (2 bytes) args
 ```
 
 #### Miscellaneous
 ```text
-	macro DIV_8 reg
-	macro MIN _arg  ; compare argument with A, A will hold the minimum
-	macro MAX _arg  ; compare argument with A, A will hold the maximun
-	macro MULTIPLY word_arg, byte_arg
-	macro STRING_SIZE mem_loc
-	macro CALC_MEMORY_OFFSET mem_start, number
-	macro INIT_MEMORY mem_start,mem_length
-	macro HEX_TO_STRING
-	macro RANDOM	; return a random 8 bit number in A
+    macro DIV_8 reg
+    macro MIN _arg                              ; compare argument with A, A will hold the minimum
+    macro MAX _arg                              ; compare argument with A, A will hold the maximun
+    macro MULTIPLY word_arg, byte_arg
+    macro STRING_SIZE mem_loc
+    macro CALC_MEMORY_OFFSET mem_start, number
+    macro INIT_MEMORY mem_start,mem_length
+    macro HEX_TO_STRING
+    macro RANDOM	                            ; return a random 8 bit number in A
 ```
 
 ## 2. Graphics Viewer: graphics_viewer

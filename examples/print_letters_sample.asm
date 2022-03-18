@@ -10,34 +10,19 @@ start:
 	SET_SCREEN_COLOUR BgBlue+Bright
 	SET_BORDER_COLOUR Blue
 
-    COOL_PRINT str1
-    COOL_PRINT str2
-    COOL_PRINT str5
-    COOL_PRINT str10
-    COOL_PRINT str11
-    COOL_PRINT str12
-    COOL_PRINT str13
-    COOL_PRINT str14
-    COOL_PRINT str16
-    COOL_PRINT str17
-    COOL_PRINT str18
-    COOL_PRINT str19
-    COOL_PRINT str20
-    COOL_PRINT str22
-    COOL_PRINT str23
-    COOL_PRINT str25
-    COOL_PRINT str26
-    COOL_PRINT str27
-    COOL_PRINT str30
-    COOL_PRINT mm1
-    COOL_PRINT mm2
-    COOL_PRINT mm3
-    COOL_PRINT mm4
-    COOL_PRINT mm5
+    COOL_PRINTS strs
+    COOL_PRINTS strs1
+    COOL_PRINTS strs2
+    COOL_PRINTS mms
     PRINT_WORD $B800, str30, FgBlue+BgYellow
     PRINT_REGISTER IX
     PRINT_REGISTER_AT $0018, HL
 l1  jr l1
+
+strs    dw  str1,str2,str5,0
+strs1   dw  str10,str11,str12,str13,str14,str16,str17,str18,str19,0
+strs2   dw  str20,str22,str23,str25,str26,str27,str30
+mms     dw  mm1,mm2,mm3,mm4
 
 str1    dz  pAt,1,1,pBold,"Cool Printing",pAt,3,4,pInk,Blue,"Ink colours"
 str2    dz  pAt,3,3,pPaper,Yellow,"Paper colours",pAt,20,3,pBright,"Bright"
