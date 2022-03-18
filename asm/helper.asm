@@ -416,6 +416,50 @@ TRUE        equ     1
 HEX_TO_STRING_MEM equ helper.hex_to_string_mem
 
 
+; from xy1 = de = end1 (e = x-axis, d = y-axis)
+; to   xy2 = hl = end2 (l = x-axis, h = y-axis)
+    macro DRAW1 x1,y1,x2,y2
+        push hl,de
+        ld l,x1
+        ld h,y1
+        ld e,x2
+        ld d,y2
+        call helper.draw_line
+        pop de,hl  
+    endm
+
+; from xy1 = de = end1 (e = x-axis, d = y-axis)
+; to   xy2 = hl = end2 (l = x-axis, h = y-axis)
+    macro DRAW2 xy1, xy2
+        push hl,de
+        ld hl,xy1
+        ld de,xy2
+        call helper.draw_line
+        pop de,hl  
+    endm
+
+    macro PLOT1 x,y
+        push hl
+        ld l,x
+        ld h,y
+        call helper.plot_reverse
+        pop hl
+    endm    
+
+    macro PLOT2 xy
+        push hl
+        ld hl,xy
+        call helper.plot_reverse
+        pop hl
+    endm    
+
+
+
+; ---------------------------------------------------------
+; ---------------------------------------------------------
+; Assembly Code Section
+; ---------------------------------------------------------
+; ---------------------------------------------------------
 
   module helper
 
@@ -704,6 +748,103 @@ priv_calc_memory_offset
     ld l,a
     pop de
   ret
+
+
+
+    macro Y_FLIP reg
+        ld a,191
+        sub reg
+        ld reg,a
+    endm
+
+; draw line: Bottom left corner is zero,zero
+; from de = end1 (e = x-axis, d = y-axis)
+; to   hl = end2 (l = x-axis, h = y-axis)
+draw_line
+    push hl, de
+        ld a,e : ld e,d : ld d,a
+        ld a,l : ld l,h : ld h,a
+        Y_FLIP e
+        Y_FLIP l
+        call draw
+    pop de, hl
+    ret
+
+
+draw:
+    call plot
+    push hl
+
+    ; calculate hl = centre pixel
+    ld a,l
+    add a,e
+    rra
+    ld l,a
+    ld a,h
+    add a,d
+    rra
+    ld h,a
+
+    ; if de (end1) = hl (centre) then we're done
+    or a
+    sbc hl,de
+    jr z,.e1
+        add hl,de
+        ex de,hl
+        call draw    ; de = centre, hl = end1
+        ex (sp),hl
+        ex de,hl
+        call draw    ; de = end2, hl = centre
+        ex de,hl
+        pop de
+        ret
+
+.e1 pop hl
+    ret
+
+; bottom left corner - plot h = y-axis, l = x-axis
+plot_reverse
+    push hl, de
+        ld d,l : ld e,h
+        Y_FLIP e
+        call plot
+    pop de, hl
+    ret
+
+
+; top left corner - plot d = x-axis, e = y-axis
+plot:
+    push hl
+    ld a,d
+    and 7
+    ld b,a
+    inc b
+    ld a,e
+    rra
+    scf
+    rra
+    or a
+    rra
+    ld l,a
+    xor e
+    and $f8
+    xor e
+    ld h,a
+    ld a,l
+    xor d
+    and 7
+    xor d
+    .3 rrca
+    ld l,a
+    ld a,1
+.l1 rrca
+    djnz .l1
+    or (hl)
+    ld (hl),a
+    pop hl
+    ret
+
+
 
 
 helper_end  nop

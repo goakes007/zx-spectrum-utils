@@ -13,7 +13,7 @@ samples/
 *.zxs
 *.nex
 *.sld
-examples/draw.*
+examples/template*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
